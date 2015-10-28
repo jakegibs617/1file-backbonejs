@@ -44,7 +44,7 @@
   <script type="text/template" id="item-template">
     <div class="view">
 
-      <label><%- title %></label>
+      <label><%- score %></label>
       <button class="destroy">remove</button>
     
     </div>
@@ -71,20 +71,20 @@
     //--------------
     app.Dart = Backbone.Model.extend({
       defaults: {
-        title: '',
-        completed: false
-      },
-      toggle: function(){
-        this.save({ completed: !this.get('completed')});
+        score: '',
+        name: ''
       }
-    });
+});
 
     //--------------
     // Collections
     //--------------
     app.DartList = Backbone.Collection.extend({
       model: app.Dart,
-      localStorage: new Store("backbone-dart")
+      comparator: function(item) {
+        return item.get('score');
+      },
+      localStorage: new Store("backbone-darts")
     });
 
     // instance of the Collection
@@ -100,7 +100,6 @@
       template: _.template($('#item-template').html()),
       render: function(){
         this.$el.html(this.template(this.model.toJSON()));
-        this.input = this.$('.edit');
         return this; // enable chained calls
       },
       initialize: function(){
@@ -145,8 +144,8 @@
       },
       newAttributes: function(){
         return {
-          title: this.input.val().trim(),
-          completed: false
+          score: this.input.val().trim(),
+          name: "test name"
         }
       }
     });
